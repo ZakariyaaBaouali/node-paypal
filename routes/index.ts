@@ -1,13 +1,15 @@
 import { Request, Response, Router } from "express";
 import { PaypalService } from "../service";
+import { getPaypalToken } from "../middleware";
 
 //✅✅
 const router = Router();
 const paypalService = new PaypalService();
 
 //✅✅
-router.post("/pay", async (req: Request, res: Response) => {
-  const pay_url = await paypalService.payPaypal();
+router.post("/pay", getPaypalToken, async (req: Request, res: Response) => {
+  const access_token = req.paypal_token;
+  const pay_url = await paypalService.payPaypal(access_token);
   if (!pay_url)
     return res.status(400).send(`can't create a payment link for you ✅✅`);
   return res.status(200).send({
@@ -16,13 +18,17 @@ router.post("/pay", async (req: Request, res: Response) => {
   });
 });
 
-router.get("/complete", async (req: Request, res: Response) => {
+router.get("/complete", getPaypalToken, async (req: Request, res: Response) => {
+  const access_token = req.paypal_token;
   const order_id = req.params.token as string;
   if (!order_id)
     return res
       .status(400)
       .send(`please verify have a valid token to get payment details ✅✅`);
-  const data = await paypalService.getPaypalPaymentDetails(order_id);
+  const data = await paypalService.getPaypalPaymentDetails(
+    order_id,
+    access_token
+  );
   if (!data)
     return res
       .status(400)

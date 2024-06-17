@@ -157,8 +157,7 @@ export class PaypalService {
   }
 
   //🚀🚀
-  public async payPaypal() {
-    const access_token = await this.generatePaypalToken();
+  public async payPaypal(access_token: string) {
     //
     if (access_token) {
       const url = `${PAYPAL_BASE_URI}/v2/checkout/orders`;
@@ -182,10 +181,7 @@ export class PaypalService {
   }
 
   //🚀🚀
-  public async getPaypalPaymentDetails(order_id: string) {
-    //
-    const access_token = await this.generatePaypalToken();
-
+  public async getPaypalPaymentDetails(order_id: string, access_token: string) {
     //
     if (access_token) {
       const url = `${PAYPAL_BASE_URI}/v2/checkout/orders/${order_id}/capture`;
