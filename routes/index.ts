@@ -20,7 +20,7 @@ router.post("/pay", getPaypalToken, async (req: Request, res: Response) => {
 
 router.get("/complete", getPaypalToken, async (req: Request, res: Response) => {
   const access_token = req.paypal_token;
-  const order_id = req.params.token as string;
+  const order_id = req.query.token as string;
   if (!order_id)
     return res
       .status(400)
